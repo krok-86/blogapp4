@@ -6,10 +6,10 @@ const app = express()
 app.use(express.json())
 
 app.post('/users', async (req, res) => {
-  const { name, email, role } = req.body
+  const { name } = req.body
 
   try {
-    const user = await User.create({ name, email, role })
+    const user = await User.create({ name })
 
     return res.json(user)
   } catch (err) {
@@ -29,11 +29,11 @@ app.get('/users', async (req, res) => {
   }
 })
 
-app.get('/users/:uuid', async (req, res) => {
-  const uuid = req.params.uuid
+app.get('/users/:id', async (req, res) => {
+  const id = req.params.id
   try {
     const user = await User.findOne({
-      where: { uuid },
+      where: { id },
       include: 'posts',
     })
 
@@ -44,10 +44,10 @@ app.get('/users/:uuid', async (req, res) => {
   }
 })
 
-app.delete('/users/:uuid', async (req, res) => {
-  const uuid = req.params.uuid
+app.delete('/users/:id', async (req, res) => {
+  const id = req.params.id
   try {
-    const user = await User.findOne({ where: { uuid } })
+    const user = await User.findOne({ where: { id } })
 
     await user.destroy()
 
@@ -58,15 +58,13 @@ app.delete('/users/:uuid', async (req, res) => {
   }
 })
 
-app.put('/users/:uuid', async (req, res) => {
-  const uuid = req.params.uuid
-  const { name, email, role } = req.body
+app.put('/users/:id', async (req, res) => {
+  const id = req.params.id
+  const { name } = req.body
   try {
-    const user = await User.findOne({ where: { uuid } })
+    const user = await User.findOne({ where: { id } })
 
     user.name = name
-    user.email = email
-    user.role = role
 
     await user.save()
 
@@ -78,12 +76,13 @@ app.put('/users/:uuid', async (req, res) => {
 })
 
 app.post('/posts', async (req, res) => {
-  const { userUuid, body } = req.body
+  const { userId, postText } = req.body
 
   try {
-    const user = await User.findOne({ where: { uuid: userUuid } })
+    console.log(req)
+    const user = await User.findOne({ where: { id: userId } })
 
-    const post = await Post.create({ body, userId: user.id })
+    const post = await Post.create({ post: postText, userId: user.id })
 
     return res.json(post)
   } catch (err) {
