@@ -16,6 +16,10 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      topicId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       createdAt: {
         allowNull: false,
         type: DataTypes.DATE,
