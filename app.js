@@ -31,6 +31,7 @@ app.get('/users', async (req, res) => {
 
 app.get('/users/:id', async (req, res) => {
   const id = req.params.id
+
   try {
     const user = await User.findOne({
       where: { id },
@@ -76,13 +77,12 @@ app.put('/users/:id', async (req, res) => {
 })
 
 app.post('/posts', async (req, res) => {
-  const { userId, topicId, postText } = req.body
+  const { userId, postText } = req.body
 
   try {
-    console.log(req)
-    const user = await User.findOne({ where: { id: userId } })
-    const topic = await Topic.findOne({where: { id: topicId }})
-    const post = await Post.create({ post: postText, userId: user.id, topicId: topic.id })
+    const user = await User.findOne({ where: { id: userId } });
+
+    const post = await Post.create({ post: postText, userId: user.id })
 
     return res.json(post)
   } catch (err) {
@@ -106,7 +106,8 @@ app.get('/posts/:id', async (req, res) => {
   const id = req.params.id
   try {
     const post = await Post.findOne({
-      where: { id }
+      where: { id },
+      include: ['user','topics'],
     })
     return res.json(post)
   } catch (err) {
@@ -131,15 +132,15 @@ app.delete('/posts/:id', async (req, res) => {
 
 app.put('/posts/:id', async (req, res) => {
   const id = req.params.id
-  const { post } = req.body
+  const { postText } = req.body
   try {
-    const postText = await Post.findOne({ where: { id } })
+    const post = await Post.findOne({ where: { id }})
 
-    postText.post = post
+    post.post = postText;
 
-    await postText.save()
+    await post.save()
 
-    return res.json(postText)
+    return res.json(post)
   } catch (err) {
     console.log(">>>>>>",err)
     return res.status(500).json({ error: 'Something went wrong' })
@@ -199,6 +200,35 @@ app.delete('/topics/:id', async (req, res) => {
   }
 })
 
+app.put('/topics/add', async(req, res) => {
+  try {
+    return Post.findByPk(req.body.postId, {
+        include: [{
+          model: Topic,
+          as: 'topics'
+        }],
+      })
+      .then((post) => {
+        console.log(post);
+        if (!post) {
+          return res.status(404).send({
+            message: 'Post Not Found',
+          });
+        }
+        Topic.findByPk(req.body.topicId).then((topic) => {
+          if (!topic) {
+            return res.status(404).send({message: 'Topic Not Found'});
+          }
+          post.addTopic(topic);
+          return res.status(200).send({message: 'Topic added to Post'});
+        })
+      })
+    } catch (err) {
+      console.log(">>>>>>",err)
+      return res.status(500).json({ error: 'Something went wrong' })
+    }
+  })
+
 app.put('/topics/:id', async (req,res) => {
   const id = req.params.id;
   const { title } = req.body;
@@ -213,7 +243,7 @@ app.put('/topics/:id', async (req,res) => {
   }
 })
 
-app.listen({ port: 3000 }, async () => {
+app.listen({ port: 3003 }, async () => {
   console.log('Server up on http://localhost:3000')
   await sequelize.authenticate()
   console.log('Database Connected!')
