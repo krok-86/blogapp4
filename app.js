@@ -200,20 +200,6 @@ app.delete("/topics/:id", async (req, res) => {
   }
 });
 
-app.put("/topics/:id", async (req, res) => {
-  const id = req.params.id;
-  const { title } = req.body;
-  try {
-    const topic = await Topic.findOne({ where: { id } });
-    topic.title = title;
-    await topic.save();
-    return res.json(topic); //Topic update
-  } catch (err) {
-    console.log(">>>>>>", err);
-    return res.status(500).json({ error: "Something went wrong" });
-  }
-});
-
 app.put("/topics/add", async (req, res) => {
   try {
     return Post.findByPk(req.body.postId, {
@@ -243,6 +229,21 @@ app.put("/topics/add", async (req, res) => {
     return res.status(500).json({ error: "Something went wrong" });
   }
 });
+
+app.put("/topics/:id", async (req, res) => {
+  const id = req.params.id;
+  const { title } = req.body;
+  try {
+    const topic = await Topic.findOne({ where: { id } });
+    topic.title = title;
+    await topic.save();
+    return res.json(topic); //Topic update
+  } catch (err) {
+    console.log(">>>>>>", err);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
 
 app.listen({ port: 3003 }, async () => {
   console.log("Server up on http://localhost:3003");
