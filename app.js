@@ -93,7 +93,7 @@ app.post("/posts", async (req, res) => {
 
 app.get("/posts", async (req, res) => {
   try {
-    const posts = await Post.findAll({ include: ["user", "topic"] });
+    const posts = await Post.findAll({ include: ["user", "topics"] });
     console.log(">>>>>>", posts);
     return res.json(posts);
   } catch (err) {
