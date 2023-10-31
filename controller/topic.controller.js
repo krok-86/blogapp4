@@ -5,9 +5,15 @@ class TopicController {
 
     const { title } = req.body;
 
-    try {      
+    try {
+      const topic = await Topic.create({ title });
+      res.status(201).json({
+        status: ">>>>>succsess<<<<<<",
+        data:{
+          topic
+        }
+      })
       return res.json(topic)   
-            
     } catch (err) {
       console.log(">>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", err);
       return res.status(500).json({ error: "Something went wrong" });
@@ -16,6 +22,7 @@ class TopicController {
   async getTopics(req, res) {
     try {
       const topics = await Topic.findAll();
+
       return res.json(topics);
     } catch (err) {
       console.log(">>>>>>", err);
@@ -29,11 +36,7 @@ class TopicController {
         where: { id },
         include: "posts",
       });
-      if (!topic) {
-        return res.status(404).send(console.log({
-          message: "Topic Not Found",
-        }));
-      }
+
       return res.json(topic);
     } catch (err) {
       console.log(">>>>>>", err);
