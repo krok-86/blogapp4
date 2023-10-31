@@ -2,21 +2,20 @@ const { Post, Topic } = require("../models");
 
 class TopicController {
   async createTopic(req, res) {
+
     const { title } = req.body;
 
-    try {
-      const topic = await Topic.create({ title });
-
-      return res.json(topic);
+    try {      
+      return res.json(topic)   
+            
     } catch (err) {
-      console.log(">>>>>>", err);
-      return res.status(500).json(err);
+      console.log(">>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", err);
+      return res.status(500).json({ error: "Something went wrong" });
     }
   }
   async getTopics(req, res) {
     try {
       const topics = await Topic.findAll();
-
       return res.json(topics);
     } catch (err) {
       console.log(">>>>>>", err);
@@ -30,7 +29,11 @@ class TopicController {
         where: { id },
         include: "posts",
       });
-
+      if (!topic) {
+        return res.status(404).send(console.log({
+          message: "Topic Not Found",
+        }));
+      }
       return res.json(topic);
     } catch (err) {
       console.log(">>>>>>", err);
