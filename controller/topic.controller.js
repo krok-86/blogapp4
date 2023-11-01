@@ -1,62 +1,65 @@
 const { Post, Topic } = require("../models");
+const CustomError = require("../errors");
 
 class TopicController {
-  async createTopic(req, res) {
-
-    const { title } = req.body;
-
+  async createTopic(req, res, next) {
     try {
+      const { title } = req.body;
+      if (!title || !title.length) {
+        throw new CustomError("Topic has wrong title", 400);
+      }
       const topic = await Topic.create({ title });
-      res.status(201).json({
-        status: ">>>>>succsess<<<<<<",
-        data:{
-          topic
-        }
-      })
-      return res.json(topic)   
+      if (!topic) {
+        throw new CustomError("Topic was not created", 404);
+      }      
+      return res.json(topic);
     } catch (err) {
-      console.log(">>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<", err);
-      return res.status(500).json({ error: "Something went wrong" });
+      next(err);
     }
   }
-  async getTopics(req, res) {
+  async getTopics(req, res, next) {
     try {
       const topics = await Topic.findAll();
-
       return res.json(topics);
     } catch (err) {
-      console.log(">>>>>>", err);
-      return res.status(500).json({ error: "Something went wrong" });
+      next(err);
     }
   }
-  async getOneTopic(req, res) {
-    const id = req.params.id;
+  async getOneTopic(req, res, next) {
     try {
+      const id = req.params.id;
+      if (!isFinite(id)) {
+        throw new CustomError("Topic id is not correct", 400);
+      }
       const topic = await Topic.findOne({
         where: { id },
         include: "posts",
       });
-
+      if (!topic) {
+        throw new CustomError("Topic is not found", 404);
+      }
       return res.json(topic);
     } catch (err) {
-      console.log(">>>>>>", err);
-      return res.status(500).json({ error: "Something went wrong" });
+      next(err);
     }
   }
-  async deleteTopic(req, res) {
-    const id = req.params.id;
-    try {
+  async deleteTopic(req, res, next) {
+      try {
+      const id = req.params.id;
+      if (!isFinite(id)) {// ошибка не предан параметр
+        throw new CustomError("Topic id is not correct", 400);
+      }
       const topic = await Topic.findOne({ where: { id } });
-
+      if (!user) {
+        throw new CustomError("Topic is not found", 404);
+      }
       await topic.destroy();
-
       return res.json({ message: "Topic deleted!" });
     } catch (err) {
-      console.log(">>>>>>", err);
-      return res.status(500).json({ error: "Something went wrong" });
+      next(err);
     }
   }
-  async updateTopicAndAddToPost(req, res) {
+  async updateTopicAndAddToPost(req, res, next) {
     try {
       const post = await Post.findByPk(req.body.postId, {
         include: [
@@ -66,38 +69,43 @@ class TopicController {
           },
         ],
       });
-
       if (!post) {
-        return res.status(404).send({
-          message: "Post Not Found",
-        });
+        throw new CustomError("Post is not found", 404);
+        // return res.status(404).send({
+        //   message: "Post Not Found",
+        // });
       }
-
       const topic = await Topic.findByPk(req.body.topicId);
-
+      
       if (!topic) {
-        return res.status(404).send({ message: "Topic Not Found" });
+        throw new CustomError("Topic is not found", 404);
+        // return res.status(404).send({ message: "Topic Not Found" });
       }
 
-      post.addTopic(topic);
-
-      return res.status(200).send({ message: "Topic added to Post" });
+      await post.addTopic(topic);
+      return res.json({ message: "Topic added to Post" });//не работает
+      // post.addTopic(topic);
+      // return res.status(200).send({ message: "Topic added to Post" });
     } catch (err) {
-      console.log(">>>>>>", err);
-      return res.status(500).json({ error: "Something went wrong" });
+      next(err)
     }
   }
-  async updateTopic(req, res) {
-    const id = req.params.id;
-    const { title } = req.body;
+  async updateTopic(req, res, next) {
     try {
+      const id = req.params.id;
+      if (!isFinite(id)) {
+        throw new CustomError("Topic id is not correct", 400);
+      }
+      const { title } = req.body;      
       const topic = await Topic.findOne({ where: { id } });
+      if (!topic) {
+        throw new CustomError("Topic is not found", 404);
+      }
       topic.title = title;
       await topic.save();
       return res.json(topic); //Topic update
     } catch (err) {
-      console.log(">>>>>>", err);
-      return res.status(500).json({ error: "Something went wrong" });
+      next(err)
     }
   }
 }

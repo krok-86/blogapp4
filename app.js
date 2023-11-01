@@ -3,7 +3,7 @@ const userRouter = require('./routes/user.routes');
 const postRouter = require('./routes/post.routes');
 const topicRouter = require('./routes/topic.routes');
 const { sequelize } = require("./models");
-const CustomError = require("./errors");
+// const CustomError = require("./errors");
 const app = express();
 
 app.use(express.json());
@@ -27,6 +27,6 @@ app.listen({ port: 3003 }, async () => {
   await sequelize.authenticate();
   console.log("Database Connected!");
   } catch (err){    
-    console.error(">>>>>>>>>>>Unable to connect to the database:", err); 
+    console.error(">>>>>Unable to connect to the database:", err); 
   }
 });
