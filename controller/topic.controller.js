@@ -62,7 +62,7 @@ class TopicController {
   async updateTopicAndAddToPost(req, res, next) {
     try {
       const {postId, topicId} = req.body;
-      if (!postId || !postId.length || !isFinite(postId)) {
+      if (!postId ) {
         throw new CustomError("Post's id is not correct", 400);
       }
       if (!topicId || !topicId.length || !isFinite(topicId)) {
