@@ -61,13 +61,6 @@ class TopicController {
   }
   async updateTopicAndAddToPost(req, res, next) {
     try {
-      const {postId, topicId} = req.body;
-      if (!postId || !postId.length || !isFinite(postId)) {
-        throw new CustomError("Post's id is not correct", 400);
-      }
-      if (!topicId || !topicId.length || !isFinite(topicId)) {
-        throw new CustomError("Topic's id is not correct", 400);
-      }
       const post = await Post.findByPk(req.body.postId, {
         include: [
           {
@@ -83,6 +76,7 @@ class TopicController {
         // });
       }
       const topic = await Topic.findByPk(req.body.topicId);
+      
       if (!topic) {
         throw new CustomError("Topic is not found", 404);
         // return res.status(404).send({ message: "Topic Not Found" });

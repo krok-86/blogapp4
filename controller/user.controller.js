@@ -47,7 +47,8 @@ class UserController {
   async deleteUser(req, res, next) {
     try {
       const id = req.params.id;
-      if (!isFinite(id)) {   // ошибка не предан параметр
+      if (!isFinite(id)) {
+        // ошибка не предан параметр
         throw new CustomError("User id is not correct", 400);
       }
       const user = await User.findOne({ where: { id } }); // юзер не найден или уже удален
