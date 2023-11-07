@@ -11,7 +11,7 @@ class TopicController {
       const topic = await Topic.create({ title });
       if (!topic) {
         throw new CustomError("Topic was not created", 404);
-      }      
+      }
       return res.json(topic);
     } catch (err) {
       next(err);
@@ -44,9 +44,10 @@ class TopicController {
     }
   }
   async deleteTopic(req, res, next) {
-      try {
+    try {
       const id = req.params.id;
-      if (!isFinite(id)) {// ошибка не предан параметр
+      if (!isFinite(id)) {
+        // ошибка не предан параметр
         throw new CustomError("Topic id is not correct", 400);
       }
       const topic = await Topic.findOne({ where: { id } });
@@ -76,18 +77,18 @@ class TopicController {
         // });
       }
       const topic = await Topic.findByPk(req.body.topicId);
-      
+
       if (!topic) {
         throw new CustomError("Topic is not found", 404);
         // return res.status(404).send({ message: "Topic Not Found" });
       }
 
       await post.addTopic(topic);
-      return res.json({ message: "Topic added to Post" });//не работает
+      return res.json({ message: "Topic added to Post" }); //не работает
       // post.addTopic(topic);
       // return res.status(200).send({ message: "Topic added to Post" });
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
   async updateTopic(req, res, next) {
@@ -96,7 +97,7 @@ class TopicController {
       if (!isFinite(id)) {
         throw new CustomError("Topic id is not correct", 400);
       }
-      const { title } = req.body;      
+      const { title } = req.body;
       const topic = await Topic.findOne({ where: { id } });
       if (!topic) {
         throw new CustomError("Topic is not found", 404);
@@ -105,7 +106,7 @@ class TopicController {
       await topic.save();
       return res.json(topic); //Topic update
     } catch (err) {
-      next(err)
+      next(err);
     }
   }
 }

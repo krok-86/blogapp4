@@ -3,7 +3,7 @@ const CustomError = require("../errors");
 
 class PostController {
   async createPost(req, res, next) {
-    console.log(req.body)
+    console.log(req.body);
     try {
       const { userId, postText } = req.body;
       if (!postText || !postText.length) {
