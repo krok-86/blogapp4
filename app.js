@@ -2,15 +2,21 @@ const express = require("express");
 const userRouter = require('./routes/user.routes');
 const postRouter = require('./routes/post.routes');
 const topicRouter = require('./routes/topic.routes');
+const cors = require('cors')
 const { sequelize } = require("./models");
 // const CustomError = require("./errors");
 const app = express();
-
+app.use(cors())
 app.use(express.json());
 
-app.use('/api', userRouter);
-app.use('/api', postRouter);
-app.use('/api', topicRouter);
+// const corsOptions = {
+//   origin: 'http://localhost:3003',
+//   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+// }
+
+app.use('/blog', cors(), userRouter);
+app.use('/blog', cors(), postRouter);
+app.use('/blog', cors(), topicRouter);
 
 app.use((error,req,res,next) => {
   res.status(error.status || 500)

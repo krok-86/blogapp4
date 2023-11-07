@@ -3,6 +3,7 @@ const CustomError = require("../errors");
 
 class PostController {
   async createPost(req, res, next) {
+    console.log(req.body)
     try {
       const { userId, postText } = req.body;
       if (!postText || !postText.length) {
@@ -11,7 +12,7 @@ class PostController {
       if (!userId || !userId.length || !isFinite(userId)) {
         throw new CustomError("Post has wrong userId", 400);
       }
-      const user = await User.findOne({ where: { id: userId } });
+      const user = await User.findOne({ where: { id: +userId } });
       if (!user) {
         throw new CustomError("UserId was not created", 404);
       }
