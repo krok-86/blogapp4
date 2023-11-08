@@ -57,7 +57,7 @@ class PostController {
       if (!isFinite(id)) {
         throw new CustomError("Post's id is not correct", 400);
       }
-      const post = await User.findOne({ where: { id } });
+      const post = await Post.findOne({ where: { id } });
       if (!post) {
         throw new CustomError("Post is not found", 404);
       }
