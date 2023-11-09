@@ -1,11 +1,11 @@
-const { Post, User } = require("../models");
+const { Post, User, Topic} = require("../models");
 const CustomError = require("../errors");
 
 class PostController {
   async createPost(req, res, next) {
     console.log(req.body);
     try {
-      const { userId, postText } = req.body;
+      const { userId, topicId, postText } = req.body;
       if (!postText || !postText.length) {
         throw new CustomError("Post has wrong postText", 400);
       }
@@ -20,6 +20,13 @@ class PostController {
       if (!post) {
         throw new CustomError("Post was not created", 404);
       }
+      const topic = await Topic.findByPk(req.body.topicId);
+
+      if (!topic) {
+       throw new CustomError("Topic is not found", 404);
+     }
+      await post.addTopic(topic);
+
       return res.json(post);
     } catch (err) {
       next(err);
