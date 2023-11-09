@@ -71,22 +71,15 @@ class TopicController {
         ],
       });
       if (!post) {
-        throw new CustomError("Post is not found", 404);
-        // return res.status(404).send({
-        //   message: "Post Not Found",
-        // });
+        throw new CustomError("Post is not found", 404);        
       }
       const topic = await Topic.findByPk(req.body.topicId);
 
       if (!topic) {
-        throw new CustomError("Topic is not found", 404);
-        // return res.status(404).send({ message: "Topic Not Found" });
+        throw new CustomError("Topic is not found", 404);        
       }
-
       await post.addTopic(topic);
-      return res.json({ message: "Topic added to Post" }); //не работает
-      // post.addTopic(topic);
-      // return res.status(200).send({ message: "Topic added to Post" });
+      return res.json({ message: "Topic added to Post" }); //не работает     
     } catch (err) {
       next(err);
     }
