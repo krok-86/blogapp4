@@ -10,7 +10,7 @@ class PostController {
         throw new CustomError("Post has wrong postText", 400);
       }
       if (!userId  || !isFinite(userId)) {
-        throw new CustomError("Post has wrong userId", 400);
+        throw new CustomError("Post has wrong Author", 400);
       }
       const user = await User.findOne({ where: { id: +userId } });
       if (!user) {
