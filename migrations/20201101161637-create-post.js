@@ -9,7 +9,7 @@ module.exports = {
         type: DataTypes.INTEGER,
       },
       post: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
       },
       userId: {

@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
       },
       post: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false,
       },
     },
