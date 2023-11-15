@@ -3,6 +3,7 @@ const CustomError = require("../errors");
 
 class UserController {
   async createUser(req, res, next) {
+    console.log(req.body);
     try {
       const { name } = req.body; // неверный параметр, пустая строка (400)
       console.log(name.length);
