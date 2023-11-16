@@ -5,12 +5,12 @@ class UserController {
   async createUser(req, res, next) {
     console.log(req.body);
     try {
-      const { name } = req.body; // неверный параметр, пустая строка (400)
+      const { name, email, password } = req.body; // неверный параметр, пустая строка (400)
       console.log(name.length);
       if (!name || !name.length) {
         throw new CustomError("User has wrong name", 400);
       }
-      const user = await User.create({ name });
+      const user = await User.create({ name, email, password });
       if (!user) {
         throw new CustomError("User was not created", 404);
       }
