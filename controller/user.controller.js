@@ -3,15 +3,15 @@ const CustomError = require("../errors");
 
 class UserController {
   async createUser(req, res, next) {
-    console.log(req.body);
+    // console.log(req.body);
     try {
       const { name, email, password } = req.body; // неверный параметр, пустая строка (400)
       console.log(name.length);
-      if (!name || !name.length) {
+      if (!name || !name.length || !email || !email.length || !password || !password.length) {//???
         throw new CustomError("User has wrong name", 400);
       }
       const user = await User.create({ name, email, password });
-      if (!user) {
+      if (!user || !email || !password) {
         throw new CustomError("User was not created", 404);
       }
       return res.json(user);
@@ -19,6 +19,27 @@ class UserController {
       next(err);
     }
   }
+  async authorizationUser (req, res, next) {
+    console.log(req.body);
+    try {
+      const {email, password} = req.body;
+      if (!email || !email.length || !password || !password.length) {//???
+        throw new CustomError("User has wrong data", 400);
+      }
+      const user = await User.findAll({
+        where: {email}&&{password}
+        // where: {password}            
+      }); 
+      if (!user) {//???
+        throw new CustomError("User data not found", 404);
+      }
+      console.log(".....>>>>>>>>>.......",user)
+      return res.json(user);   
+    } catch (err) {
+      next(err);
+    }
+  }
+
   async getUsers(req, res, next) {
     try {
       const users = await User.findAll();
