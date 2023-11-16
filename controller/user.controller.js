@@ -26,9 +26,8 @@ class UserController {
       if (!email || !email.length || !password || !password.length) {//???
         throw new CustomError("User has wrong data", 400);
       }
-      const user = await User.findAll({
-        where: {email}&&{password}
-        // where: {password}            
+      const user = await User.findOne({
+        where: [{email},{password}]
       }); 
       if (!user) {//???
         throw new CustomError("User data not found", 404);
