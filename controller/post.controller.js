@@ -34,7 +34,10 @@ class PostController {
   }
   async getPosts(req, res, next) {
     try {
-      const posts = await Post.findAll({ include: ["user", "topics"] });
+      const posts = await Post.findAll({ include: ["user", "topics"],
+      order: [
+        ['id', 'ASC'],
+    ], });
       return res.json(posts);
     } catch (err) {
       next(err);
