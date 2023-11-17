@@ -7,29 +7,25 @@ const cors = require("cors");
 const { sequelize } = require("./models");
 const app = express();
 
-const registration = require("./validations/auth")
+const registerValidation = require("./validations/auth")
 const {validationResult} =require("express-validator")
-const {query} = require("express-validator");
+// const {query} = require("express-validator");
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/blog", cors(), userRouter);
-app.use("/blog", cors(), postRouter);
-app.use("/blog", cors(), topicRouter);
+app.use("/blog/users", cors(), userRouter);
+app.use("/blog/posts", cors(), postRouter);
+app.use("/blog/topics", cors(), topicRouter);
 
-app.post ('/blog/register', query('password','Пароль должен содержать минимум 5 символов').isLength({ min: 5 }), (req, res) => {
-  
-  const errors = validationResult(req);
-
-  console.log(errors);
-
+app.post ('/blog/register', registerValidation, (req, res) => { 
+  console.log(">>>>>>>>>>>>>>>",res)
+  const errors = validationResult(req); 
   if (!errors.isEmpty()){
     return res.status(400).json(errors.array());    
   }
   res.json({
-    success: true,
-    
+    success: true,    
   })
 });
 // const token = jwt.sign({
