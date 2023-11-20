@@ -1,9 +1,10 @@
 const { Post, User, Topic} = require("../models");
 const CustomError = require("../errors");
+const { validationResult } = require("express-validator");
 
 class PostController {
   async createPost(req, res, next) {
-    console.log(req.body);
+    console.log(">>>>>>>>>>>>>>>>>",req.body);        
     try {
       const { userId, topicId, postText } = req.body;
       if (!postText || !postText.length) {
@@ -12,7 +13,7 @@ class PostController {
       if (!userId  || !isFinite(userId)) {
         throw new CustomError("Post has wrong Author", 400);
       }
-      const user = await User.findOne({ where: { id: +userId } });
+      const user = await User.findOne({ where: { id: + userId } });
       if (!user) {
         throw new CustomError("UserId was not created", 404);
       }
