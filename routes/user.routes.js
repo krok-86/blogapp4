@@ -8,7 +8,7 @@ const handleValidationErrors = require('../utils/handleValidationErrors');
 
 //create user(author)
 router.post('/registration', registerValidation, handleValidationErrors, userController.registrationUser);
-router.post('/authorization', loginValidation, handleValidationErrors, userController.authorizationUser);//loginValidation - it's work?
+router.post('/authorization',handleValidationErrors, loginValidation, userController.authorizationUser);//handleValidationErrors, loginValidation - it's work?
 router.get('/authorization/me', checkAuth, loginValidation, handleValidationErrors, userController.authorizationMeUser);//where is more add checkAuth? And handleValidationErrors needs here?
 router.get('/', userController.getUsers);
 router.get('/:id', userController.getOneUser);
