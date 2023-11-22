@@ -14,10 +14,11 @@ body('password', 'password must have more than 5 symbols').isLength({ min: 5 })
 const postCreateValidation = [
 body('postText', 'enter article text' ).isLength({ min: 3 }).isString(),//postText or post?
 ];
-module.exports = 
-registerValidation, 
-loginValidation, 
-postCreateValidation;
+module.exports = {
+registerValidation,
+loginValidation,
+postCreateValidation
+};
 
 // const { body } = require("express-validator");
 

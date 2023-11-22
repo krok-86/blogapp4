@@ -72,7 +72,9 @@ class PostController {
       if (!post) {
         throw new CustomError("Post is not found", 404);
       }
-      await post.destroy();
+      console.log(post)
+      // if(req.body.userId !== post.author.id) {
+      // await post.destroy();
       return res.json({ message: "Post deleted!" });
     } catch (err) {
       next(err);
