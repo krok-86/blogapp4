@@ -28,7 +28,12 @@ class PostController {
      }
       await post.addTopic(topic);
 
-      return res.json(post);
+      const addedPost = await Post.findOne({
+        where: { id: post.id },
+        include: ["user", "topics"],
+      });
+
+      return res.json(addedPost);
     } catch (err) {
       next(err);
     }
