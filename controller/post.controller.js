@@ -75,7 +75,7 @@ class PostController {
       console.log(post)
       // if(req.body.userId !== post.author.id) {
       // await post.destroy();
-      return res.json({ message: "Post deleted!" });
+      return res.json(post);
     } catch (err) {
       next(err);
     }
