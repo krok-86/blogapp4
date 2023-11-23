@@ -79,7 +79,7 @@ class PostController {
       }
       console.log(post)
       // if(req.body.userId !== post.author.id) {
-      // await post.destroy();
+      await post.destroy();
       return res.json(post);
     } catch (err) {
       next(err);
