@@ -8,9 +8,6 @@ try {
   req.userId = decoded._id;
   next();
 } catch (e) {
-//   res.status(403).json({
-//     message: 'not access allowed too'
-// });
 res.status(403).json(e);
 }
 } else {

@@ -1,19 +1,19 @@
-const { Post, User, Topic} = require("../models");
+const { Post, User, Topic } = require("../models");
 const CustomError = require("../errors");
 const { validationResult } = require("express-validator");
 
 class PostController {
   async createPost(req, res, next) {
-    console.log(">>>>>>>>>>>>>>>>>",req.body);        
+    console.log(">>>>>>>>>>>>>>>>>", req.body);
     try {
       const { userId, topicId, postText } = req.body;
       if (!postText || !postText.length) {
         throw new CustomError("Post has wrong postText", 400);
       }
-      if (!userId  || !isFinite(userId)) {
+      if (!userId || !isFinite(userId)) {
         throw new CustomError("Post has wrong Author", 400);
       }
-      const user = await User.findOne({ where: { id: + userId } });
+      const user = await User.findOne({ where: { id: +userId } });
       if (!user) {
         throw new CustomError("UserId was not created", 404);
       }
@@ -24,8 +24,8 @@ class PostController {
       const topic = await Topic.findByPk(req.body.topicId);
 
       if (!topic) {
-       throw new CustomError("Topic is not found", 404);
-     }
+        throw new CustomError("Topic is not found", 404);
+      }
       await post.addTopic(topic);
 
       const addedPost = await Post.findOne({
@@ -40,10 +40,10 @@ class PostController {
   }
   async getPosts(req, res, next) {
     try {
-      const posts = await Post.findAll({ include: ["user", "topics"],
-      order: [
-        ['id', 'ASC'],
-    ], });
+      const posts = await Post.findAll({
+        include: ["user", "topics"],
+        order: [["id", "ASC"]],
+      });
       return res.json(posts);
     } catch (err) {
       next(err);
@@ -73,14 +73,17 @@ class PostController {
       if (!isFinite(id)) {
         throw new CustomError("Post's id is not correct", 400);
       }
-      const post = await Post.findOne({ where: { id } });
+      const post = await Post.findOne({ where: { id }, include:
+      ["user"],});
       if (!post) {
         throw new CustomError("Post is not found", 404);
       }
-      console.log(post)
-      // if(req.body.userId !== post.author.id) {
+      if(req.userId === post.userId) {      
       await post.destroy();
       return res.json(post);
+      } else {
+      throw new CustomError ('Only author can delete this post', 403);
+      }
     } catch (err) {
       next(err);
     }
@@ -96,9 +99,13 @@ class PostController {
       if (!post) {
         throw new CustomError("Post is not found", 404);
       }
+      if(req.userId === post.userId) {
       post.post = postText;
       await post.save();
       return res.json(post);
+      } else {
+        throw new CustomError ('Only author can edit this post', 403);
+      }
     } catch (err) {
       next(err);
     }

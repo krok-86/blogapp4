@@ -47,8 +47,7 @@ class TopicController {
     try {
       const id = req.params.id;
       if (!isFinite(id)) {
-        // ошибка не предан параметр
-        throw new CustomError("Topic id is not correct", 400);
+        throw new CustomError("Topic id is not correct", 400); // ошибка не предан параметр
       }
       const topic = await Topic.findOne({ where: { id } });
       if (!user) {
@@ -78,7 +77,6 @@ class TopicController {
       if (!topic) {
         throw new CustomError("Topic is not found", 404);
       }
-
       await post.addTopic(topic);
       return res.json({ message: "Topic added to Post" });
     } catch (err) {

@@ -2,11 +2,10 @@ const { User } = require("../models");
 const CustomError = require("../errors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { validationResult } = require("express-validator");
 
 class UserController {
   async registrationUser(req, res, next) {
-        const { name, email, password } = req.body;
+    const { name, email, password } = req.body;
     try {
       const userWithEmail = await User.findOne({ where: { email } });
       if (userWithEmail) {
@@ -16,8 +15,8 @@ class UserController {
       next(err);
       return;
     }
-    const salt = await bcrypt.genSalt(10);//wrap?
-    const paramsHash = await bcrypt.hash(password, salt);//wrap?
+    const salt = await bcrypt.genSalt(10);
+    const paramsHash = await bcrypt.hash(password, salt); 
     try {
       const user = await User.create({ name, email, password: paramsHash });
       const token = jwt.sign(
@@ -32,13 +31,13 @@ class UserController {
       const { password, ...userData } = user.dataValues;
       res.json({ userData, token });
     } catch (err) {
-      // err.message = "Server error: user was not created";
-      // err.code = "500";
+      err.message = "Server error: user was not created";//add my err
+      err.code = "500";
       next(err);
     }
   }
 
-  async authorizationUser(req, res, next) {    
+  async authorizationUser(req, res, next) {
     try {
       const user = await User.findOne({ where: { email: req.body.email } });
       if (!user) {
@@ -63,25 +62,25 @@ class UserController {
       const { password, ...userData } = user.dataValues;
       res.json({ userData, token });
     } catch (err) {
-      // err.message = "Server error: user was not authorized";
-      // err.code = "500";
+      err.message = "Server error: user was not authorized";//add my err
+      err.code = "500";
       next(err);
     }
   }
 
-  async authorizationMeUser(req, res, next) {    
+  async authorizationMeUser(req, res, next) {
     try {
       const user = await User.findOne({
         where: { id: req.userId },
       });
       if (!user) {
         throw new CustomError("user not found", 404);
-      }      
+      }
       const { password, ...userData } = user.dataValues;
       res.json(userData);
     } catch (err) {
-      // err.message = "Server error: user was not found"; //add my err
-      // err.code = "500";
+      err.message = "Server error: user was not found"; //add my err
+      err.code = "500";
       next(err);
     }
   }
@@ -118,8 +117,7 @@ class UserController {
     try {
       const id = req.params.id;
       if (!isFinite(id)) {
-        // ошибка не предан параметр
-        throw new CustomError("User id is not correct", 400);
+        throw new CustomError("User id is not correct", 400);// ошибка не предан параметр
       }
       const user = await User.findOne({ where: { id } }); // юзер не найден или уже удален
       if (!user) {
