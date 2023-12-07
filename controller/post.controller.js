@@ -42,7 +42,7 @@ class PostController {
     try {
       const posts = await Post.findAll({
         include: ["user", "topics"],
-        order: [["id", "ASC"]],
+        order: [["id", "DESC"]],
       });
       return res.json(posts);
     } catch (err) {
